@@ -13,27 +13,27 @@ const dateString =
 // default system message obtained using the following method: https://twitter.com/DeminDimin/status/1619935545144279040
 export const _defaultSystemMessage =
   import.meta.env.VITE_DEFAULT_SYSTEM_MESSAGE ??
-  `You are ChatGPT, a large language model trained by OpenAI.
+  `You an helpful assistant.
 Carefully heed the user's instructions. 
 Respond using Markdown.`;
 
-export const modelOptions: ModelOptions[] = [
-  'gpt-3.5-turbo',
-  'gpt-3.5-turbo-16k',
-  'gpt-3.5-turbo-1106',
-  'gpt-3.5-turbo-0125',
-  'gpt-4',
-  'gpt-4-32k',
-  'gpt-4-1106-preview',
-  'gpt-4-0125-preview',
-  'gpt-4-turbo',
-  'gpt-4-turbo-2024-04-09',
-  'gpt-4o',
-  'gpt-4o-2024-05-13',
-  // 'gpt-3.5-turbo-0301',
-  // 'gpt-4-0314',
-  // 'gpt-4-32k-0314',
-];
+export let modelOptions: string[] = [];
+
+async function fetchModels() {
+  try {
+    const response = await fetch('https://ai.is-a.dev/models_list'); // Replace with the actual URL
+    if (!response.ok) throw new Error('Failed to fetch models');
+    
+    const models: string[] = await response.json();
+    modelOptions = models;
+  } catch (error) {
+    console.error('Error fetching models:', error);
+  }
+}
+
+// Fetch models on script load
+fetchModels();
+
 
 export const defaultModel = 'gpt-3.5-turbo';
 
@@ -142,7 +142,6 @@ export const defaultUserMaxToken = 4000;
 
 export const _defaultChatConfig: ConfigInterface = {
   model: defaultModel,
-  max_tokens: defaultUserMaxToken,
   temperature: 1,
   presence_penalty: 0,
   top_p: 1,
